@@ -231,13 +231,10 @@ function renderCalendar() {
         if (progress[d]) el.classList.add('completed');
 
         const dayData = allDays.find(x => x.day === d);
-        let shortTitle = '';
-        if (dayData) {
-            const words = dayData.title.split(/[\s&]+/);
-            shortTitle = words[0].length > 6 ? words[0].substring(0, 6) + '..' : words[0];
-        }
+        const meta = DAY_META[d] || {};
+        const keyword = meta.k || '';
 
-        el.innerHTML = `<span class="day-num">${d}</span><span class="day-label">${shortTitle}</span>`;
+        el.innerHTML = `<span class="day-num">${d}</span><span class="day-label">${keyword}</span>`;
         el.title = dayData ? `Day ${d}: ${dayData.title}` : `Day ${d}`;
         el.setAttribute('aria-label', dayData ? `Day ${d}: ${dayData.title}` : `Day ${d}`);
         el.addEventListener('click', () => toggleDay(d));

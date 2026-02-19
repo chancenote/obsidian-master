@@ -200,7 +200,6 @@ nav { display: flex; gap: 0.4rem; justify-content: center; flex-wrap: wrap; }
     font-weight: 600;
 }
 .cal-day {
-    aspect-ratio: 1;
     background: #161b22;
     border: 2px solid #21262d;
     border-radius: 10px;
@@ -210,20 +209,32 @@ nav { display: flex; gap: 0.4rem; justify-content: center; flex-wrap: wrap; }
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s;
-    font-size: 0.85rem;
     position: relative;
+    padding: 0.5rem 0.2rem;
+    min-height: 70px;
+    gap: 2px;
 }
-.cal-day:hover { border-color: #7c3aed; transform: scale(1.08); box-shadow: 0 0 12px rgba(124,58,237,0.2); }
+.cal-day:hover { border-color: #7c3aed; transform: scale(1.05); box-shadow: 0 0 12px rgba(124,58,237,0.2); }
 .cal-day:focus-visible { outline: 2px solid #a78bfa; outline-offset: 2px; }
-.cal-day .day-num { font-weight: 700; font-size: 1.05rem; }
-.cal-day .day-label { font-size: 0.55rem; color: #6e7681; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; }
+.cal-day .day-num { font-weight: 700; font-size: 1rem; line-height: 1.2; }
+.cal-day .day-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #8b949e;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 95%;
+    letter-spacing: -0.3px;
+}
 .cal-day.completed {
     background: linear-gradient(135deg, #7c3aed, #6d28d9);
     border-color: #a78bfa;
     animation: pop 0.3s ease;
 }
 .cal-day.completed .day-num { color: #fff; }
-.cal-day.completed .day-label { color: #ddd6fe; }
+.cal-day.completed .day-label { color: #e9d5ff; }
 .cal-day.empty { visibility: hidden; pointer-events: none; }
 
 @keyframes pop {
@@ -830,9 +841,9 @@ footer {
     .badge-title { font-size: 0.55rem; }
     .badge-desc { display: none; }
     .calendar-grid { gap: 3px; }
-    .cal-day { border-radius: 6px; border-width: 1px; }
-    .cal-day .day-num { font-size: 0.85rem; }
-    .cal-day .day-label { display: none; }
+    .cal-day { border-radius: 6px; border-width: 1px; min-height: 56px; padding: 0.35rem 0.15rem; }
+    .cal-day .day-num { font-size: 0.8rem; }
+    .cal-day .day-label { font-size: 0.58rem; }
     .week-title { font-size: 0.8rem; }
     .curr-day { padding: 0.8rem 1rem; }
     .curr-day h3 { font-size: 0.88rem; }
