@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obsidian 30-Day Mastery Tracker</title>
+    <meta name="description" content="30일 만에 옵시디언 마스터하기 - 커리큘럼 & 진행 추적">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Obsidian 30-Day Mastery</h1>
+        <p class="subtitle">초보에서 마스터까지 | Claude Code 자동화 포함</p>
+        <nav role="navigation" aria-label="메인 네비게이션">
+            <button class="nav-btn active" data-page="dashboard" aria-current="page">대시보드</button>
+            <button class="nav-btn" data-page="curriculum">커리큘럼</button>
+            <button class="nav-btn" data-page="youtube">YouTube 강의</button>
+        </nav>
+    </header>
+
+    <!-- ==================== DASHBOARD ==================== -->
+    <main id="dashboard" class="page active" role="main">
+        <section class="stats-row" aria-label="학습 통계">
+            <div class="stat-card">
+                <div class="stat-number" id="completedDays">0</div>
+                <div class="stat-label">완료 일수</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="progressPercent">0%</div>
+                <div class="stat-label">전체 진행률</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="currentWeek">1주차</div>
+                <div class="stat-label">현재 주차</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="streak">0</div>
+                <div class="stat-label">연속 학습</div>
+            </div>
+        </section>
+
+        <section class="progress-section" aria-label="전체 진행률">
+            <h2 class="section-title">전체 진행률</h2>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="mainProgressBar"></div>
+                <span class="progress-text" id="progressBarText">0%</span>
+            </div>
+            <div class="week-labels">
+                <span>1주차: 기초</span>
+                <span>2주차: 중급</span>
+                <span>3주차: 고급</span>
+                <span>4주차: 자동화</span>
+            </div>
+        </section>
+
+        <section class="calendar-section" aria-label="30일 캘린더">
+            <h2 class="section-title">30일 캘린더</h2>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </section>
+
+        <section class="weekly-overview" aria-label="주차별 진행">
+            <h2 class="section-title">주차별 상세</h2>
+            <div class="weeks-container" id="weeksContainer"></div>
+        </section>
+    </main>
+
+    <!-- ==================== CURRICULUM ==================== -->
+    <main id="curriculum" class="page" role="main">
+        <div class="curriculum-container" id="curriculumContent"></div>
+    </main>
+
+    <!-- ==================== YOUTUBE ==================== -->
+    <main id="youtube" class="page" role="main">
+        <div class="youtube-container" id="youtubeContent"></div>
+    </main>
+
+    <footer>
+        <span>Obsidian 30-Day Mastery | 진행 데이터는 브라우저에 저장됩니다</span>
+        <button class="reset-btn" id="resetBtn">진행률 초기화</button>
+    </footer>
+
+    <script src="curriculum-data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
