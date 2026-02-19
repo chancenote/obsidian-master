@@ -1,5 +1,8 @@
 // ===== STATE MANAGEMENT =====
 const STORAGE_KEY = 'obsidian-mastery-progress';
+const NOTES_KEY = 'obsidian-mastery-notes';
+const ONBOARD_KEY = 'obsidian-mastery-onboarded';
+const MILESTONE_KEY = 'obsidian-mastery-milestones';
 
 function loadProgress() {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -25,13 +28,8 @@ function isDayCompleted(day) {
     return !!loadProgress()[day];
 }
 
-// ===== STATS =====
-function updateStats() {
+function getStreak() {
     const progress = loadProgress();
-    const completed = Object.keys(progress).length;
-    const percent = Math.round((completed / 30) * 100);
-    const week = completed <= 7 ? '1주차' : completed <= 14 ? '2주차' : completed <= 21 ? '3주차' : '4주차';
-
     let streak = 0;
     const sortedDays = Object.keys(progress).map(Number).sort((a, b) => b - a);
     if (sortedDays.length > 0) {
@@ -43,6 +41,52 @@ function updateStats() {
             }
         }
     }
+    return streak;
+}
+
+// ===== LEARNING NOTES =====
+function loadNotes() {
+    const saved = localStorage.getItem(NOTES_KEY);
+    return saved ? JSON.parse(saved) : {};
+}
+
+function saveNote(day, text) {
+    const notes = loadNotes();
+    if (text.trim()) {
+        notes[day] = text;
+    } else {
+        delete notes[day];
+    }
+    localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+}
+
+function getNote(day) {
+    return loadNotes()[day] || '';
+}
+
+function getNoteCount() {
+    return Object.keys(loadNotes()).filter(k => loadNotes()[k].trim()).length;
+}
+
+// ===== ONBOARDING =====
+function showOnboarding() {
+    if (!localStorage.getItem(ONBOARD_KEY)) {
+        document.getElementById('onboardingOverlay').style.display = 'flex';
+    }
+}
+
+function dismissOnboarding() {
+    localStorage.setItem(ONBOARD_KEY, '1');
+    document.getElementById('onboardingOverlay').style.display = 'none';
+}
+
+// ===== STATS =====
+function updateStats() {
+    const progress = loadProgress();
+    const completed = Object.keys(progress).length;
+    const percent = Math.round((completed / 30) * 100);
+    const week = completed <= 7 ? '1주차' : completed <= 14 ? '2주차' : completed <= 21 ? '3주차' : '4주차';
+    const streak = getStreak();
 
     document.getElementById('completedDays').textContent = completed;
     document.getElementById('progressPercent').textContent = percent + '%';
@@ -50,6 +94,109 @@ function updateStats() {
     document.getElementById('streak').textContent = streak;
     document.getElementById('mainProgressBar').style.width = percent + '%';
     document.getElementById('progressBarText').textContent = percent + '%';
+
+    checkMilestones(completed, percent);
+}
+
+// ===== MILESTONES & CELEBRATION =====
+function checkMilestones(completed, percent) {
+    const shown = JSON.parse(localStorage.getItem(MILESTONE_KEY) || '[]');
+    const milestones = [
+        { at: 25, msg: '25% 달성! 기초를 마스터하고 있어요!' },
+        { at: 50, msg: '절반 완료! 대단해요!' },
+        { at: 75, msg: '75% 달성! 거의 마스터!' },
+        { at: 100, msg: '축하합니다! 옵시디언 마스터!' }
+    ];
+
+    for (const m of milestones) {
+        if (percent >= m.at && !shown.includes(m.at)) {
+            shown.push(m.at);
+            localStorage.setItem(MILESTONE_KEY, JSON.stringify(shown));
+            celebrate(m.msg);
+            if (m.at === 100) {
+                setTimeout(() => showCertificate(), 3500);
+            }
+            break;
+        }
+    }
+}
+
+function celebrate(message) {
+    const overlay = document.getElementById('celebrationOverlay');
+    overlay.style.display = 'block';
+    overlay.innerHTML = '';
+
+    // Confetti
+    const colors = ['#7c3aed', '#a78bfa', '#7ee787', '#ffa657', '#79c0ff', '#f78166', '#d2a8ff'];
+    for (let i = 0; i < 60; i++) {
+        const conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.style.left = Math.random() * 100 + '%';
+        conf.style.background = colors[Math.floor(Math.random() * colors.length)];
+        conf.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+        conf.style.animationDelay = Math.random() * 0.5 + 's';
+        conf.style.width = (6 + Math.random() * 8) + 'px';
+        conf.style.height = (6 + Math.random() * 8) + 'px';
+        overlay.appendChild(conf);
+    }
+
+    // Message
+    const text = document.createElement('div');
+    text.className = 'celebration-text';
+    text.textContent = message;
+    overlay.appendChild(text);
+
+    setTimeout(() => {
+        overlay.style.display = 'none';
+        overlay.innerHTML = '';
+    }, 3000);
+}
+
+// ===== CERTIFICATE =====
+function showCertificate() {
+    const existing = document.querySelector('.certificate-overlay');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'certificate-overlay';
+    const today = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+    overlay.innerHTML = `
+        <div class="certificate">
+            <span class="cert-icon">🏆</span>
+            <h2>수료 인증서</h2>
+            <p class="cert-name">NEXT COWORK with Obsidian</p>
+            <p class="cert-desc">
+                30일 옵시디언 마스터 과정을 성공적으로 완료하였습니다.<br>
+                기초부터 Claude Code 자동화까지, 전 과정을 수료한 것을 인증합니다.
+            </p>
+            <p class="cert-date">${today}</p>
+            <button class="cert-close" onclick="this.closest('.certificate-overlay').remove()">닫기</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+}
+
+// ===== ACHIEVEMENTS =====
+function renderAchievements() {
+    const grid = document.getElementById('badgesGrid');
+    grid.innerHTML = '';
+    const progress = loadProgress();
+    const streak = getStreak();
+    const noteCount = getNoteCount();
+
+    ACHIEVEMENTS_DATA.forEach(a => {
+        const unlocked = a.check(progress, streak, noteCount);
+        const card = document.createElement('div');
+        card.className = 'badge-card' + (unlocked ? ' unlocked' : '');
+        card.innerHTML = `
+            <span class="badge-icon">${a.icon}</span>
+            <div class="badge-title">${a.title}</div>
+            <div class="badge-desc">${a.desc}</div>
+        `;
+        card.title = a.desc;
+        grid.appendChild(card);
+    });
 }
 
 // ===== CALENDAR =====
@@ -84,7 +231,6 @@ function renderCalendar() {
         if (progress[d]) el.classList.add('completed');
 
         const dayData = allDays.find(x => x.day === d);
-        // Truncate Korean-safe: split by space or use full short title
         let shortTitle = '';
         if (dayData) {
             const words = dayData.title.split(/[\s&]+/);
@@ -117,6 +263,13 @@ function renderWeeks() {
         if (completedInWeek === totalInWeek) badgeClass = 'done';
         else if (completedInWeek > 0) badgeClass = 'partial';
 
+        const objectives = WEEK_OBJECTIVES[week.week] || [];
+        const objectivesHtml = objectives.length ? `
+            <div class="week-objectives">
+                <strong>학습 목표</strong>
+                <ul>${objectives.map(o => `<li>${o}</li>`).join('')}</ul>
+            </div>` : '';
+
         card.innerHTML = `
             <div class="week-header" data-week="${wi}" role="button" tabindex="0" aria-expanded="${wi === 0}">
                 <span class="week-title">${week.title}</span>
@@ -124,18 +277,26 @@ function renderWeeks() {
                 <span class="week-badge ${badgeClass}">${completedInWeek}/${totalInWeek}</span>
             </div>
             <div class="week-body ${wi === 0 ? 'open' : ''}" id="weekBody${wi}">
-                ${week.days.map(d => `
+                ${objectivesHtml}
+                ${week.days.map(d => {
+                    const meta = DAY_META[d.day] || {};
+                    const stars = meta.d ? '★'.repeat(meta.d) + '☆'.repeat(5 - meta.d) : '';
+                    return `
                     <div class="day-item">
                         <div class="day-check ${isDayCompleted(d.day) ? 'checked' : ''}" data-day="${d.day}" role="checkbox" tabindex="0" aria-checked="${isDayCompleted(d.day)}" aria-label="Day ${d.day} 완료 체크">&#10003;</div>
                         <div class="day-info">
                             <h4>Day ${d.day}: ${d.title}</h4>
                             <p>${d.summary}</p>
+                            <div class="day-meta">
+                                ${meta.d ? `<span class="difficulty" title="난이도 ${meta.d}/5">${stars}</span>` : ''}
+                                ${meta.t ? `<span class="time">⏱ ${meta.t}분</span>` : ''}
+                            </div>
                             <div class="tags">
                                 ${d.tags.map(t => `<span class="tag ${t}">${t}</span>`).join('')}
                             </div>
                         </div>
-                    </div>
-                `).join('')}
+                    </div>`;
+                }).join('')}
             </div>
         `;
         container.appendChild(card);
@@ -185,6 +346,13 @@ function renderCurriculum() {
     `;
 
     CURRICULUM.forEach(week => {
+        const objectives = WEEK_OBJECTIVES[week.week] || [];
+        const objectivesHtml = objectives.length ? `
+            <div class="curr-objectives">
+                <strong>🎯 이번 주 학습 목표</strong>
+                <ul>${objectives.map(o => `<li>${o}</li>`).join('')}</ul>
+            </div>` : '';
+
         const section = document.createElement('div');
         section.className = 'curr-week';
         section.innerHTML = `
@@ -192,9 +360,20 @@ function renderCurriculum() {
                 <h2>${week.title}</h2>
                 <p>${week.description}</p>
             </div>
-            ${week.days.map(d => `
+            ${objectivesHtml}
+            ${week.days.map(d => {
+                const meta = DAY_META[d.day] || {};
+                const stars = meta.d ? '★'.repeat(meta.d) + '☆'.repeat(5 - meta.d) : '';
+                const noteVal = getNote(d.day).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return `
                 <div class="curr-day">
-                    <h3><span>Day ${d.day}</span> - ${d.title}</h3>
+                    <h3>
+                        <span>Day ${d.day}</span> - ${d.title}
+                        <span class="curr-meta">
+                            ${meta.d ? `<span class="curr-diff" title="난이도 ${meta.d}/5">${stars}</span>` : ''}
+                            ${meta.t ? `<span class="curr-time">⏱ ${meta.t}분</span>` : ''}
+                        </span>
+                    </h3>
                     <div class="curr-detail">
                         <p>${d.summary}</p>
                         <ul>
@@ -215,15 +394,36 @@ function renderCurriculum() {
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                             Claude에서 실습하기
                         </button>` : ''}
+                        <div class="learning-note">
+                            <div class="learning-note-header">
+                                <span>📝 학습 노트</span>
+                                <span class="note-saved" id="noteSaved${d.day}">저장됨</span>
+                            </div>
+                            <textarea placeholder="오늘 배운 내용, 느낀 점을 메모하세요..." data-day="${d.day}" oninput="handleNoteInput(this)">${noteVal}</textarea>
+                        </div>
                         <div class="tags" style="margin-top:0.5rem;">
                             ${d.tags.map(t => `<span class="tag ${t}">${t}</span>`).join('')}
                         </div>
                     </div>
-                </div>
-            `).join('')}
+                </div>`;
+            }).join('')}
         `;
         container.appendChild(section);
     });
+}
+
+let noteDebounce = {};
+function handleNoteInput(textarea) {
+    const day = textarea.dataset.day;
+    clearTimeout(noteDebounce[day]);
+    noteDebounce[day] = setTimeout(() => {
+        saveNote(day, textarea.value);
+        const indicator = document.getElementById('noteSaved' + day);
+        if (indicator) {
+            indicator.classList.add('show');
+            setTimeout(() => indicator.classList.remove('show'), 1500);
+        }
+    }, 500);
 }
 
 // ===== YOUTUBE PAGE =====
@@ -322,11 +522,58 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 
 // ===== RESET =====
 document.getElementById('resetBtn').addEventListener('click', () => {
-    if (confirm('모든 진행률을 초기화하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
+    if (confirm('모든 진행률과 학습 노트를 초기화하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(NOTES_KEY);
+        localStorage.removeItem(MILESTONE_KEY);
         renderAll();
+        renderCurriculum();
     }
 });
+
+// ===== DATA EXPORT / IMPORT =====
+function exportData() {
+    const data = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        progress: loadProgress(),
+        notes: loadNotes(),
+        milestones: JSON.parse(localStorage.getItem(MILESTONE_KEY) || '[]')
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `obsidian-mastery-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('데이터가 내보내기 되었습니다!');
+}
+
+function importData(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (data.progress) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data.progress));
+            }
+            if (data.notes) {
+                localStorage.setItem(NOTES_KEY, JSON.stringify(data.notes));
+            }
+            if (data.milestones) {
+                localStorage.setItem(MILESTONE_KEY, JSON.stringify(data.milestones));
+            }
+            renderAll();
+            renderCurriculum();
+            showToast('데이터를 성공적으로 가져왔습니다!');
+        } catch {
+            showToast('파일을 읽을 수 없습니다. 올바른 백업 파일인지 확인하세요.');
+        }
+    };
+    reader.readAsText(file);
+}
 
 // ===== CLAUDE PROMPT =====
 function openClaudePrompt(day) {
@@ -356,7 +603,7 @@ function showToast(message) {
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.textContent = message;
-    toast.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#238636;color:#fff;padding:0.7rem 1.2rem;border-radius:8px;font-size:0.82rem;font-weight:600;z-index:2000;animation:slideUp 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
+    toast.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#238636;color:#fff;padding:0.7rem 1.2rem;border-radius:8px;font-size:0.82rem;font-weight:600;z-index:2000;animation:slideUp 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.3);max-width:90%;text-align:center;';
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
 }
@@ -411,7 +658,6 @@ function shareCopyLink() {
     navigator.clipboard.writeText(SITE_URL).then(() => {
         showToast('링크가 클립보드에 복사되었습니다!');
     }).catch(() => {
-        // Fallback
         const input = document.createElement('input');
         input.value = SITE_URL;
         document.body.appendChild(input);
@@ -427,9 +673,16 @@ function renderAll() {
     updateStats();
     renderCalendar();
     renderWeeks();
+    renderAchievements();
 }
 
 // ===== INIT =====
 renderAll();
 renderCurriculum();
 renderYoutube();
+showOnboarding();
+
+// PWA Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+}

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://chancenote.github.io/obsidian-master/sitemap.xml

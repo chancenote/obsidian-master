@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXT COWORK with Obsidian</title>
     <meta name="description" content="30일 만에 옵시디언 마스터하기 - 커리큘럼 & 진행 추적 | Claude Code 자동화 포함">
+    <meta name="theme-color" content="#7c3aed">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="icon-192.svg">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.svg">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -30,6 +38,23 @@
 
     <link rel="canonical" href="https://chancenote.github.io/obsidian-master/">
     <link rel="stylesheet" href="styles.css">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "NEXT COWORK with Obsidian",
+      "description": "30일 만에 옵시디언 마스터하기 — 초보에서 전문가까지, Claude Code 자동화 통합 커리큘럼",
+      "provider": { "@type": "Organization", "name": "NEXT COWORK" },
+      "educationalLevel": "Beginner to Advanced",
+      "inLanguage": "ko",
+      "isAccessibleForFree": true,
+      "numberOfCredits": "30",
+      "timeRequired": "P30D",
+      "url": "https://chancenote.github.io/obsidian-master/"
+    }
+    </script>
 </head>
 <body>
     <header>
@@ -41,6 +66,32 @@
             <button class="nav-btn" data-page="youtube">YouTube 강의</button>
         </nav>
     </header>
+
+    <!-- ==================== ONBOARDING ==================== -->
+    <div id="onboardingOverlay" class="onboarding-overlay" style="display:none">
+        <div class="onboarding-modal">
+            <div class="onboarding-header">
+                <span class="onboarding-icon">🎯</span>
+                <h2>NEXT COWORK with Obsidian</h2>
+                <p>30일 만에 옵시디언을 마스터하세요!</p>
+            </div>
+            <div class="onboarding-body">
+                <div class="onboarding-step">
+                    <span class="step-icon">📅</span>
+                    <div><strong>매일 학습</strong><br>캘린더에서 완료한 날짜를 클릭하세요</div>
+                </div>
+                <div class="onboarding-step">
+                    <span class="step-icon">📖</span>
+                    <div><strong>커리큘럼 따라가기</strong><br>실습과제 + Claude 프롬프트로 깊이 있는 학습</div>
+                </div>
+                <div class="onboarding-step">
+                    <span class="step-icon">🏆</span>
+                    <div><strong>업적 달성</strong><br>학습 마일스톤마다 배지를 획득하세요</div>
+                </div>
+            </div>
+            <button class="onboarding-start-btn" onclick="dismissOnboarding()">학습 시작하기</button>
+        </div>
+    </div>
 
     <!-- ==================== DASHBOARD ==================== -->
     <main id="dashboard" class="page active" role="main">
@@ -75,6 +126,12 @@
                 <span>3주차: 고급</span>
                 <span>4주차: 자동화</span>
             </div>
+        </section>
+
+        <!-- ACHIEVEMENTS -->
+        <section class="achievements-section" aria-label="업적">
+            <h2 class="section-title">업적 배지</h2>
+            <div class="badges-grid" id="badgesGrid"></div>
         </section>
 
         <section class="calendar-section" aria-label="30일 캘린더">
@@ -122,9 +179,18 @@
     </section>
 
     <footer>
-        <span>NEXT COWORK with Obsidian | 진행 데이터는 브라우저에 저장됩니다</span>
-        <button class="reset-btn" id="resetBtn">진행률 초기화</button>
+        <div class="footer-left">
+            <span>NEXT COWORK with Obsidian | 진행 데이터는 브라우저에 저장됩니다</span>
+        </div>
+        <div class="footer-actions">
+            <button class="footer-btn" onclick="exportData()" title="데이터 백업">📥 내보내기</button>
+            <label class="footer-btn" title="데이터 복원">📤 가져오기<input type="file" accept=".json" onchange="importData(this.files[0])" hidden></label>
+            <button class="reset-btn" id="resetBtn">초기화</button>
+        </div>
     </footer>
+
+    <!-- Celebration overlay -->
+    <div id="celebrationOverlay" class="celebration-overlay" style="display:none"></div>
 
     <script src="curriculum-data.js"></script>
     <script src="app.js"></script>
