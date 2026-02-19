@@ -386,6 +386,42 @@ function showPromptModal(day, promptText) {
     document.addEventListener('keydown', function escHandler(e) { if (e.key === 'Escape') { modal.remove(); document.removeEventListener('keydown', escHandler); } });
 }
 
+// ===== SHARE =====
+const SITE_URL = 'https://chancenote.github.io/obsidian-master/';
+const SHARE_TITLE = 'NEXT COWORK with Obsidian';
+const SHARE_DESC = '30일 만에 옵시디언 마스터하기 — 초보에서 전문가까지, Claude Code 자동화 통합 커리큘럼';
+
+function shareKakao() {
+    const kakaoUrl = `https://sharer.kakao.com/talk/friends/picker/link?url=${encodeURIComponent(SITE_URL)}&text=${encodeURIComponent(SHARE_TITLE + ' - ' + SHARE_DESC)}`;
+    window.open(kakaoUrl, '_blank', 'width=600,height=700');
+}
+
+function shareTwitter() {
+    const text = `${SHARE_TITLE}\n${SHARE_DESC}`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SITE_URL)}`;
+    window.open(twitterUrl, '_blank', 'width=600,height=500');
+}
+
+function shareFacebook() {
+    const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}`;
+    window.open(fbUrl, '_blank', 'width=600,height=500');
+}
+
+function shareCopyLink() {
+    navigator.clipboard.writeText(SITE_URL).then(() => {
+        showToast('링크가 클립보드에 복사되었습니다!');
+    }).catch(() => {
+        // Fallback
+        const input = document.createElement('input');
+        input.value = SITE_URL;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        showToast('링크가 클립보드에 복사되었습니다!');
+    });
+}
+
 // ===== RENDER ALL =====
 function renderAll() {
     updateStats();

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed"/>
+      <stop offset="50%" style="stop-color:#6d28d9"/>
+      <stop offset="100%" style="stop-color:#4c1d95"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a78bfa"/>
+      <stop offset="100%" style="stop-color:#c4b5fd"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <!-- Decorative circles -->
+  <circle cx="100" cy="530" r="180" fill="rgba(167,139,250,0.08)"/>
+  <circle cx="1100" cy="100" r="220" fill="rgba(167,139,250,0.06)"/>
+  <circle cx="900" cy="500" r="120" fill="rgba(167,139,250,0.05)"/>
+  <!-- Grid dots -->
+  <g fill="rgba(255,255,255,0.06)">
+    <circle cx="200" cy="150" r="3"/><circle cx="250" cy="150" r="3"/><circle cx="300" cy="150" r="3"/><circle cx="350" cy="150" r="3"/>
+    <circle cx="200" cy="200" r="3"/><circle cx="250" cy="200" r="3"/><circle cx="300" cy="200" r="3"/><circle cx="350" cy="200" r="3"/>
+    <circle cx="200" cy="250" r="3"/><circle cx="250" cy="250" r="3"/><circle cx="300" cy="250" r="3"/><circle cx="350" cy="250" r="3"/>
+    <circle cx="850" cy="350" r="3"/><circle cx="900" cy="350" r="3"/><circle cx="950" cy="350" r="3"/><circle cx="1000" cy="350" r="3"/>
+    <circle cx="850" cy="400" r="3"/><circle cx="900" cy="400" r="3"/><circle cx="950" cy="400" r="3"/><circle cx="1000" cy="400" r="3"/>
+  </g>
+  <!-- Obsidian icon placeholder -->
+  <rect x="520" y="120" width="160" height="160" rx="32" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+  <text x="600" y="220" text-anchor="middle" fill="white" font-size="72" font-family="Arial, sans-serif" font-weight="bold">O</text>
+  <!-- Title -->
+  <text x="600" y="340" text-anchor="middle" fill="white" font-size="52" font-family="Arial, Helvetica, sans-serif" font-weight="800" letter-spacing="-1">NEXT COWORK</text>
+  <text x="600" y="395" text-anchor="middle" fill="url(#accent)" font-size="36" font-family="Arial, Helvetica, sans-serif" font-weight="600">with Obsidian</text>
+  <!-- Subtitle -->
+  <text x="600" y="455" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="22" font-family="Arial, sans-serif">30일 만에 옵시디언 마스터하기</text>
+  <!-- Tags -->
+  <rect x="310" y="490" width="120" height="34" rx="17" fill="rgba(255,255,255,0.12)"/>
+  <text x="370" y="512" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="14" font-family="Arial, sans-serif" font-weight="600">커리큘럼</text>
+  <rect x="450" y="490" width="140" height="34" rx="17" fill="rgba(255,255,255,0.12)"/>
+  <text x="520" y="512" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="14" font-family="Arial, sans-serif" font-weight="600">진행률 추적</text>
+  <rect x="610" y="490" width="160" height="34" rx="17" fill="rgba(255,255,255,0.12)"/>
+  <text x="690" y="512" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="14" font-family="Arial, sans-serif" font-weight="600">Claude 자동화</text>
+  <rect x="790" y="490" width="120" height="34" rx="17" fill="rgba(255,255,255,0.12)"/>
+  <text x="850" y="512" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="14" font-family="Arial, sans-serif" font-weight="600">무료 공개</text>
+  <!-- Bottom line -->
+  <rect x="350" y="560" width="500" height="2" rx="1" fill="url(#accent)" opacity="0.3"/>
+  <text x="600" y="590" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="14" font-family="Arial, sans-serif">chancenote.github.io/obsidian-master</text>
+</svg>
