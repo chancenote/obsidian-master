@@ -35,7 +35,7 @@ export function LoginForm() {
   const [mode, setMode] = useState<AuthMode>("sign-in");
 
   const [state, formAction, isPending] = useActionState(
-    async (_prevState: AuthActionState, formData: FormData) => {
+    async (_prevState: AuthActionState | void, formData: FormData) => {
       const email = String(formData.get("email") ?? "").trim();
       const password = String(formData.get("password") ?? "");
 
@@ -108,10 +108,10 @@ export function LoginForm() {
             />
           </div>
 
-          {state.error ? (
+          {state && "error" in state && state.error ? (
             <p className="text-sm text-destructive">{state.error}</p>
           ) : null}
-          {state.success ? (
+          {state && "success" in state && state.success ? (
             <p className="text-sm text-emerald-500">{state.success}</p>
           ) : null}
 
