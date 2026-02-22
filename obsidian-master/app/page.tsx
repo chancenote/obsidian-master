@@ -53,13 +53,13 @@ async function HomeContent() {
       <section className="space-y-8">
         <LoginBanner user={user} />
         <StatsBar user={user} initialProgress={progress} />
+        <Achievements user={user} initialProgress={progress} initialNotes={notes} />
         <CalendarGrid
           user={user}
           initialProgress={progress}
           initialMilestones={milestones}
         />
         <WeeklyOverview user={user} initialProgress={progress} />
-        <Achievements user={user} initialProgress={progress} initialNotes={notes} />
       </section>
       <Footer user={user} />
     </>

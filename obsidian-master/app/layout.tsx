@@ -6,14 +6,39 @@ import { MigrationHandler } from "@/components/MigrationHandler";
 import { Suspense } from "react";
 import "./globals.css";
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://obsidian-master.vercel.app";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(defaultUrl),
+  metadataBase: new URL(siteUrl),
   title: "Obsidian Master - 30일 옵시디언 학습",
   description: "30일 만에 옵시디언을 마스터하는 체계적 학습 트래커",
+  applicationName: "Obsidian Master",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "Obsidian Master",
+    title: "Obsidian Master - 30일 옵시디언 학습",
+    description: "30일 만에 옵시디언을 마스터하는 체계적 학습 트래커",
+    locale: "ko_KR",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Obsidian Master - 30일 옵시디언 학습 트래커",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Obsidian Master - 30일 옵시디언 학습",
+    description: "30일 만에 옵시디언을 마스터하는 체계적 학습 트래커",
+    images: ["/twitter-image"],
+  },
 };
 
 const geistSans = Geist({

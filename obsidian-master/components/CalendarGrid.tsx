@@ -15,8 +15,13 @@ import {
 import type { User } from "@supabase/supabase-js";
 import { useEffect, useMemo, useState, useTransition } from "react";
 
-const WEEKDAYS = ["월", "화", "수", "목", "금", "토", "일"];
 const MILESTONES = [25, 50, 75, 100];
+
+const MILESTONE_META: Record<number, { icon: string; message: string }> = {
+  25: { icon: "🎉", message: "25% 달성! 좋은 페이스에요!" },
+  50: { icon: "⚡", message: "절반 달성! 옵시디언이 손에 익기 시작했죠?" },
+  75: { icon: "🔥", message: "75% 달성! 마스터가 눈앞이에요!" },
+};
 
 const TITLE_BY_DAY = CURRICULUM.flatMap((week) => week.days).reduce(
   (acc, day) => {
@@ -40,6 +45,7 @@ export function CalendarGrid({
   const [progress, setProgress] = useState<Record<string, string>>(initialProgress);
   const [milestones, setMilestones] = useState<number[]>(initialMilestones);
   const [overlayMessage, setOverlayMessage] = useState("");
+  const [overlayIcon, setOverlayIcon] = useState<string | undefined>(undefined);
   const [showOverlay, setShowOverlay] = useState(false);
   const [showCertificate, setShowCertificate] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -80,7 +86,9 @@ export function CalendarGrid({
     if (reached === 100) {
       setShowCertificate(true);
     } else {
-      setOverlayMessage(`축하합니다! ${reached}% 마일스톤 달성!`);
+      const meta = MILESTONE_META[reached];
+      setOverlayIcon(meta?.icon);
+      setOverlayMessage(meta?.message ?? `축하합니다! ${reached}% 마일스톤 달성!`);
       setShowOverlay(true);
     }
 
@@ -131,22 +139,6 @@ export function CalendarGrid({
       </div>
 
       <div className="grid grid-cols-7 gap-2">
-        {WEEKDAYS.map((weekday) => (
-          <div
-            key={weekday}
-            className="rounded-md border border-zinc-800 bg-zinc-950/70 py-2 text-center text-xs font-semibold text-zinc-500"
-          >
-            {weekday}
-          </div>
-        ))}
-
-        {Array.from({ length: 2 }).map((_, index) => (
-          <div
-            key={`empty-${index}`}
-            className="h-20 rounded-lg border border-dashed border-zinc-800/80"
-          />
-        ))}
-
         {Array.from({ length: 30 }).map((_, index) => {
           const day = index + 1;
           const key = String(day);
@@ -187,6 +179,7 @@ export function CalendarGrid({
       <CelebrationOverlay
         show={showOverlay}
         message={overlayMessage}
+        icon={overlayIcon}
         onClose={() => setShowOverlay(false)}
       />
       <CelebrationOverlay

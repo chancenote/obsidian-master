@@ -83,7 +83,7 @@ export function Footer({ user }: FooterProps) {
 
   return (
     <footer className="mx-auto mt-8 flex max-w-5xl items-center justify-between border-t border-zinc-800 px-4 py-4 text-xs text-zinc-500">
-      <span>Obsidian Master &copy; {new Date().getFullYear()}</span>
+      <span>Obsidian Master &copy; {new Date().getFullYear()} 프로그램은 NEXT COWORK이 함께합니다.</span>
       <div className="flex items-center gap-2">
         <button
           type="button"
